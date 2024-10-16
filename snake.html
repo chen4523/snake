@@ -5,6 +5,7 @@
   <style>
     body {
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
@@ -40,6 +41,10 @@
     .active {
       background: #000;
       color: #fff;
+    }
+    #instructions {
+      margin-top: 20px;
+      text-align: center;
     }
   </style>
 </head>
@@ -125,13 +130,6 @@
       });
       context.fillStyle = isDarkMode ? '#ff6666' : '#ff6666';
       context.fillRect(food.x, food.y, grid, grid);
-
-      if (isSprinting) {
-        sprintTime++;
-        if (sprintTime % 20 === 0) {
-          snake.pop();
-        }
-      }
 
       for (let i = 4; i < snake.length; i++) {
         if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) {
