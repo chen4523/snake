@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>貪吃蛇遊戲</title>
+  <title>貪吃蛇</title>
   <style>
     body {
       display: flex;
@@ -48,6 +48,11 @@
   <div id="controls">
     <button id="pauseBtn" class="light-mode">暫停</button>
     <button id="darkModeBtn" class="light-mode">深色模式</button>
+  </div>
+  <div id="instructions" class="light-mode">
+    <p>space：暫停</p>
+    <p>shift：衝刺</p>
+    <p>ctrl：深色模式/淺色模式</p>
   </div>
   <script>
     const canvas = document.getElementById('gameCanvas');
@@ -187,7 +192,7 @@
       canvas.classList.toggle('dark-mode');
       document.getElementById('darkModeBtn').classList.toggle('dark-mode');
       document.getElementById('pauseBtn').classList.toggle('dark-mode');
-      document.getElementById('darkModeBtn').textContent = isDarkMode ? '亮色模式' : '深色模式';
+      document.getElementById('darkModeBtn').textContent = isDarkMode ? '淺色模式' : '深色模式';
     }
   </script>
 </body>
