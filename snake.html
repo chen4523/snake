@@ -11,67 +11,68 @@
       height: 100vh;
       margin: 0;
       background: #ffdab9;
-      transition: background 2s;
+      transition: background 2s; /* 背景顏色過渡 */
     }
     body.dark-mode {
-      background: #2B2B2B;
-      color: #fff;
+      background: #2B2B2B; /* 深色模式背景 */
+      color: #fff; /* 深色模式文字顏色 */
     }
     canvas {
-      border: 1px solid #000;
-      transition: border-color 2s;
+      border: 1px solid #000; /* 畫布邊框顏色 */
+      transition: border-color 2s; /* 邊框顏色過渡 */
     }
     canvas.dark-mode {
-      border-color: #fff;
+      border-color: #fff; /* 深色模式下的邊框顏色 */
     }
     #controls {
       position: absolute;
       top: 10px;
       left: 50%;
-      transform: translateX(-50%);
+      transform: translateX(-50%); /* 控制按鈕居中 */
       display: flex;
-      gap: 10px;
+      gap: 10px; /* 按鈕之間的間距 */
     }
     button {
       padding: 5px 10px;
       font-size: 16px;
-      cursor: pointer;
-      transition: background 0.5s, color 0.5s;
+      cursor: pointer; /* 鼠標指標變成手形 */
+      transition: background 0.5s, color 0.5s; /* 按鈕背景和文字顏色過渡 */
     }
     .active {
-      background: #000;
-      color: #fff;
+      background: #000; /* 活動按鈕背景顏色 */
+      color: #fff; /* 活動按鈕文字顏色 */
     }
     #instructions {
       margin-top: 20px;
-      text-align: center;
+      text-align: center; /* 說明文字置中 */
     }
   </style>
 </head>
 <body>
-  <canvas id="gameCanvas" width="400" height="400"></canvas>
+  <canvas id="gameCanvas" width="400" height="400"></canvas> <!-- 遊戲畫布 -->
   <div id="controls">
-    <button id="pauseBtn" class="light-mode">暫停</button>
-    <button id="darkModeBtn" class="light-mode">深色模式</button>
+    <button id="pauseBtn" class="light-mode">暫停</button> <!-- 暫停按鈕 -->
+    <button id="darkModeBtn" class="light-mode">深色模式</button> <!-- 深色模式按鈕 -->
   </div>
   <div id="instructions" class="light-mode">
     <p>space：暫停</p>
     <p>shift：衝刺</p>
-    <p>ctrl：深色模式/淺色模式</p>
+    <p>ctrl：深色模式/淺色模式</p> <!-- 控制說明 -->
   </div>
   <script>
-    const canvas = document.getElementById('gameCanvas');
-    const context = canvas.getContext('2d');
-    const grid = 16;
-    let snake = [{x: 160, y: 160}, {x: 144, y: 160}, {x: 128, y: 160}];
-    let direction = 'right';
-    let food = generateFood();
-    let speed = 200;
-    let isSprinting = false;
-    let sprintTime = 0;
-    let isPaused = false;
-    let isDarkMode = false;
+    const canvas = document.getElementById('gameCanvas'); // 獲取畫布
+    const context = canvas.getContext('2d'); // 獲取 2D 繪圖上下文
+    const grid = 16; // 每個蛇身和食物的大小
+    let snake = [{x: 160, y: 160}, {x: 144, y: 160}, {x: 128, y: 160}]; // 蛇的初始位置
+    let direction = 'right'; // 蛇的移動方向
+    let food = generateFood(); // 生成食物
+    let speed = 120; // 遊戲速度
+    let isSprinting = false; // 是否衝刺
+    let sprintTime = 0; // 衝刺時間
+    let isPaused = false; // 遊戲是否暫停
+    let isDarkMode = false; // 是否為深色模式
 
+    // 生成食物的位置
     function generateFood() {
       let newFood;
       while (true) {
@@ -79,28 +80,32 @@
           x: Math.floor(Math.random() * canvas.width / grid) * grid,
           y: Math.floor(Math.random() * canvas.height / grid) * grid
         };
+        // 確保食物不會出現在蛇身上
         if (!snake.some(segment => segment.x === newFood.x && segment.y === newFood.y)) {
-          return newFood;
+          return newFood; // 返回新食物的位置
         }
       }
     }
 
+    // 重置遊戲
     function resetGame() {
-      snake = [{x: 160, y: 160}, {x: 144, y: 160}, {x: 128, y: 160}];
-      direction = 'right';
-      food = generateFood();
-      speed = 200;
-      isSprinting = false;
-      sprintTime = 0;
-      isPaused = false;
-      clearInterval(gameLoop);
-      gameLoop = setInterval(loop, speed);
-      document.getElementById('pauseBtn').classList.remove('active');
+      snake = [{x: 160, y: 160}, {x: 144, y: 160}, {x: 128, y: 160}]; // 重置蛇的位置
+      direction = 'right'; // 重置方向
+      food = generateFood(); // 重新生成食物
+      speed = 200; // 重置速度
+      isSprinting = false; // 取消衝刺
+      sprintTime = 0; // 重置衝刺時間
+      isPaused = false; // 取消暫停
+      clearInterval(gameLoop); // 清除現有的遊戲循環
+      gameLoop = setInterval(loop, speed); // 重新開始遊戲循環
+      document.getElementById('pauseBtn').classList.remove('active'); // 移除暫停按鈕的活動狀態
     }
 
+    // 遊戲循環
     function loop() {
-      if (isPaused) return;
+      if (isPaused) return; // 如果遊戲暫停，則不執行後續代碼
 
+      // 根據方向更新蛇的頭部位置
       if (direction === 'right') {
         snake.unshift({x: (snake[0].x + grid) % canvas.width, y: snake[0].y});
       }
@@ -114,46 +119,52 @@
         snake.unshift({x: snake[0].x, y: (snake[0].y - grid + canvas.height) % canvas.height});
       }
 
+      // 檢查是否吃到食物
       if (snake[0].x === food.x && snake[0].y === food.y) {
-        food = generateFood();
+        food = generateFood(); // 重新生成食物
       } else {
-        snake.pop();
+        snake.pop(); // 否則移除蛇尾
       }
 
+      // 清空畫布並繪製蛇
       context.clearRect(0, 0, canvas.width, canvas.height);
       snake.forEach((segment, index) => {
         const greenToYellow = Math.floor((index / (5 + snake.length)) * 255);
+        // 根據深色模式設定顏色
         context.fillStyle = isDarkMode
-          ? `rgb(${0 + greenToYellow}, ${255 - greenToYellow}, 255)`
-          : `rgb(${0 + greenToYellow}, 255, 0)`; // 反轉顏色
-        context.fillRect(segment.x, segment.y, grid, grid);
+          ? `rgb(${0 + greenToYellow}, ${255 - greenToYellow}, 255)` // 深色模式顏色
+          : `rgb(${0 + greenToYellow}, 255, 0)`; // 淺色模式顏色
+        context.fillRect(segment.x, segment.y, grid, grid); // 繪製蛇的每一段
       });
-      context.fillStyle = isDarkMode ? '#ff6666' : '#ff6666';
-      context.fillRect(food.x, food.y, grid, grid);
+      context.fillStyle = isDarkMode ? '#ff6666' : '#ff6666'; // 食物顏色
+      context.fillRect(food.x, food.y, grid, grid); // 繪製食物
 
+      // 檢查是否撞到自己
       for (let i = 4; i < snake.length; i++) {
         if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) {
-          resetGame();
+          resetGame(); // 撞到自己則重置遊戲
         }
       }
     }
 
-    let gameLoop = setInterval(loop, speed);
+    let gameLoop = setInterval(loop, speed); // 啟動遊戲循環
 
+    // 監聽鍵盤按下事件
     document.addEventListener('keydown', function(e) {
       if (e.key === ' ') {
-        isPaused = !isPaused;
-        document.getElementById('pauseBtn').classList.toggle('active');
+        isPaused = !isPaused; // 切換暫停狀態
+        document.getElementById('pauseBtn').classList.toggle('active'); // 切換暫停按鈕狀態
       }
       if (e.key === 'Control') {
-        toggleDarkMode();
+        toggleDarkMode(); // 切換深色模式
       }
       if (e.key === 'Shift') {
-        isSprinting = true;
-        clearInterval(gameLoop);
-        gameLoop = setInterval(loop, 50);
+        isSprinting = true; // 開始衝刺
+        clearInterval(gameLoop); // 清除當前遊戲循環
+        gameLoop = setInterval(loop, 40); // 加速遊戲循環
       }
-      if (isPaused) return;
+      if (isPaused) return; // 如果遊戲暫停，則不執行後續代碼
+      // 根據按鍵改變蛇的方向
       if (e.key === 'w' && direction !== 'down') {
         direction = 'up';
       } else if (e.key === 's' && direction !== 'up') {
@@ -165,32 +176,37 @@
       }
     });
 
+    // 監聽鍵盤鬆開事件
     document.addEventListener('keyup', function(e) {
       if (e.key === 'Shift') {
-        isSprinting = false;
-        clearInterval(gameLoop);
-        gameLoop = setInterval(loop, speed);
+        isSprinting = false; // 停止衝刺
+        clearInterval(gameLoop); // 清除當前遊戲循環
+        gameLoop = setInterval(loop, speed); // 恢復原來速度的遊戲循環
       }
     });
 
+    // 禁止右鍵菜單
     document.addEventListener('contextmenu', function(e) {
       e.preventDefault();
     });
 
+    // 暫停按鈕的點擊事件
     document.getElementById('pauseBtn').addEventListener('click', function() {
-      isPaused = !isPaused;
-      this.classList.toggle('active');
+      isPaused = !isPaused; // 切換暫停狀態
+      this.classList.toggle('active'); // 切換按鈕狀態
     });
 
+    // 深色模式按鈕的點擊事件
     document.getElementById('darkModeBtn').addEventListener('click', toggleDarkMode);
 
+    // 切換深色模式的函數
     function toggleDarkMode() {
-      isDarkMode = !isDarkMode;
-      document.body.classList.toggle('dark-mode');
-      canvas.classList.toggle('dark-mode');
-      document.getElementById('darkModeBtn').classList.toggle('dark-mode');
-      document.getElementById('pauseBtn').classList.toggle('dark-mode');
-      document.getElementById('darkModeBtn').textContent = isDarkMode ? '淺色模式' : '深色模式';
+      isDarkMode = !isDarkMode; // 切換深色模式狀態
+      document.body.classList.toggle('dark-mode'); // 切換 body 的深色模式類別
+      canvas.classList.toggle('dark-mode'); // 切換畫布的深色模式類別
+      document.getElementById('darkModeBtn').classList.toggle('dark-mode'); // 切換深色模式按鈕的類別
+      document.getElementById('pauseBtn').classList.toggle('dark-mode'); // 切換暫停按鈕的類別
+      document.getElementById('darkModeBtn').textContent = isDarkMode ? '淺色模式' : '深色模式'; // 更新按鈕文字
     }
   </script>
 </body>
